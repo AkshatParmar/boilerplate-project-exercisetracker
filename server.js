@@ -118,8 +118,8 @@ app.post('/api/users/:_id/exercises', urlencodedParser, function(req, res, next)
   const desc = req.body.description;
   const dur = req.body.duration;
   let datum = req.body.date;
-  // datum = (datum === "" || typeof datum === "undefined") ? new Date().toDateString() : new Date(datum).toDateString();
-  datum = (datum === "" || typeof datum === "undefined") ? new Date() : new Date(datum);
+  datum = (datum === "" || typeof datum === "undefined") ? new Date().toDateString() : new Date(datum).toDateString();
+  // datum = (datum === "" || typeof datum === "undefined") ? new Date() : new Date(datum);
   var usaname = "";
 
   User.findOne({ _id: user_id }, function(err, user_found) {
