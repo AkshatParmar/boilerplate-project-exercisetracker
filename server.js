@@ -97,7 +97,6 @@ app.post('/api/users', urlencodedParser, function(req, res) {
   const username = req.body.username;
   createAndSaveUser(username, function(err, data) {
     if (err) return console.log(err);
-    console.log("Entry: ", data);
     res.status(201).json({
       username: username,
       _id: data['_id']
@@ -109,7 +108,6 @@ app.post('/api/users', urlencodedParser, function(req, res) {
 app.get('/api/users', function(req, res) {
   User.find({}, function(err, users) {
     if (err) return console.log(err);
-    console.log(users);
     res.status(200).json(users);
   });
 });
@@ -154,16 +152,16 @@ app.post('/api/users/:_id/exercises', urlencodedParser, function(req, res, next)
 
 // Get logs
 app.get('/api/users/:_id/logs', function(req, res, next) {
+  
   // Check Query
   let { userId, from, to, limit } = req.query;
   userId = req.params._id;
   from = new Date(from) == "Invalid Date" ? 0 : new Date(from).toDateString();
   to = new Date(to) == "Invalid Date" ? 0 : new Date(to).toDateString();
   limit = isNaN(parseInt(limit)) ? 0 : parseInt(limit);
-
   
   // Fetch User
-  User.findOne({ id: userId }, function(err, user_found) {
+  User.findOne({ _id: userId }, function(err, user_found) {
     if (err) return console.log(err);
 
     if (user_found) {
@@ -220,7 +218,9 @@ app.get('/api/users/:_id/logs', function(req, res, next) {
           };
         });
       };
-    };
+    } else {
+      res.status(401).json({ message:"No user found"});
+    }
   });
 });
 
