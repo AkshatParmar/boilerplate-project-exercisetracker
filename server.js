@@ -157,9 +157,9 @@ app.get('/api/users/:_id/logs', function(req, res, next) {
   // Check Query
   let { userId, from, to, limit } = req.query;
   userId = req.params._id;
-  from = new Date(from) == "Invalid Date" ? 0 : new Date(from);
-  to = new Date(to) == "Invalid Date" ? 0 : new Date(to);
-  limit = isNaN(parseInt(limit)) ? 0 : parseInt(limit);
+  from = new Date(from) == "Invalid Date" ? new Date(0) : new Date(from);
+  to = new Date(to) == "Invalid Date" ? new Date('2999-12-31') : new Date(to);
+  limit = isNaN(parseInt(limit)) ? 999 : parseInt(limit);
 
   console.log(from,"to", to)
   // Fetch User
@@ -183,7 +183,6 @@ app.get('/api/users/:_id/logs', function(req, res, next) {
               duration: el.duration,
               date: el.date
             }));
-            // console.log(log.filter(d => new Date(d.date) > from && new Date(d.date) < to))            
             let return_obj = {
               _id: user_found._id,
               username: user_found.username,
