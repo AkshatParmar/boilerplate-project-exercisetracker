@@ -161,7 +161,6 @@ app.get('/api/users/:_id/logs', function(req, res, next) {
   to = new Date(to) == "Invalid Date" ? new Date('2999-12-31') : new Date(to);
   limit = isNaN(parseInt(limit)) ? 999 : parseInt(limit);
 
-  console.log(from,"to", to)
   // Fetch User
   User.findOne({ _id: userId }, function(err, user_found) {
     if (err) return console.log(err);
@@ -172,7 +171,7 @@ app.get('/api/users/:_id/logs', function(req, res, next) {
         Exercise
         .find({ user: user_found._id })
         .select('description duration date -_id')
-        .where('date').gte(from).lte(to)
+        // .where('date').gte(from).lte(to)
         .limit(limit)
         .exec(function(err, foundExcercies) {
           if (err) return console.log(err);
@@ -183,6 +182,7 @@ app.get('/api/users/:_id/logs', function(req, res, next) {
               duration: el.duration,
               date: el.date
             }));
+            log = log.filter(item => new Date(item.date) >= from && new Date(item.date) <= to);
             let return_obj = {
               _id: user_found._id,
               username: user_found.username,
