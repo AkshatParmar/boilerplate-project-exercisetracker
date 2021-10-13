@@ -118,7 +118,8 @@ app.post('/api/users/:_id/exercises', urlencodedParser, function(req, res, next)
   const desc = req.body.description;
   const dur = req.body.duration;
   let datum = req.body.date;
-  datum = (datum === "" || typeof datum === "undefined") ? new Date().toDateString() : new Date(datum).toDateString();
+  // datum = (datum === "" || typeof datum === "undefined") ? new Date().toDateString() : new Date(datum).toDateString();
+  datum = (datum === "" || typeof datum === "undefined") ? new Date() : new Date(datum);
   var usaname = "";
 
   User.findOne({ _id: user_id }, function(err, user_found) {
@@ -156,17 +157,18 @@ app.get('/api/users/:_id/logs', function(req, res, next) {
   // Check Query
   let { userId, from, to, limit } = req.query;
   userId = req.params._id;
-  from = new Date(from) == "Invalid Date" ? 0 : new Date(from).toDateString();
-  to = new Date(to) == "Invalid Date" ? 0 : new Date(to).toDateString();
+  from = new Date(from) == "Invalid Date" ? 0 : new Date(from);
+  to = new Date(to) == "Invalid Date" ? 0 : new Date(to);
   limit = isNaN(parseInt(limit)) ? 0 : parseInt(limit);
-  
+
+  console.log(from,"to", to)
   // Fetch User
   User.findOne({ _id: userId }, function(err, user_found) {
     if (err) return console.log(err);
 
     if (user_found) {
 
-      if (Object.keys(req.query).length !== 0) {
+      if (Object.keys(req.query).length != 0) {
         Exercise
         .find({ user: user_found._id })
         .select('description duration date -_id')
@@ -181,6 +183,7 @@ app.get('/api/users/:_id/logs', function(req, res, next) {
               duration: el.duration,
               date: el.date
             }));
+            // console.log(log.filter(d => new Date(d.date) > from && new Date(d.date) < to))            
             let return_obj = {
               _id: user_found._id,
               username: user_found.username,
